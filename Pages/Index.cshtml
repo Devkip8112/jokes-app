@@ -1,0 +1,80 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 mb-4">Welcome to JokeBox</h1>
+    <p class="lead">Your daily dose of laughter!</p>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        @foreach (var joke in Model.Jokes)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@joke.Setup</h5>
+                        <p class="card-text">@joke.Punchline</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary">@joke.Category</span>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <button class="btn btn-link favorite-btn p-0 @(Model.FavoriteJokeIds.Contains(joke.Id) ? "active" : "")" data-joke-id="@joke.Id">
+                                    <i class="bi @(Model.FavoriteJokeIds.Contains(joke.Id) ? "bi-heart-fill" : "bi-heart") fs-5"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <a asp-page="/Account/Login" class="btn btn-link p-0">
+                                    <i class="bi bi-heart fs-5"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.favorite-btn').click(function() {
+                var jokeId = $(this).data('joke-id');
+                var button = $(this);
+                
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                
+                $.ajax({
+                    url: '/Favorites?handler=ToggleFavorite',
+                    type: 'POST',
+                    data: { jokeId: jokeId },
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            button.toggleClass('active');
+                            var icon = button.find('i');
+                            if (icon.hasClass('bi-heart')) {
+                                icon.removeClass('bi-heart').addClass('bi-heart-fill');
+                            } else {
+                                icon.removeClass('bi-heart-fill').addClass('bi-heart');
+                            }
+                        } else {
+                            alert(response.message || 'Failed to update favorite status. Please try again.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('Failed to update favorite status. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+}

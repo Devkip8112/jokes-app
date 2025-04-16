@@ -1,0 +1,45 @@
+@page
+@model MyAspNetApp.Pages.Jokes.EditModel
+@{
+    ViewData["Title"] = "Edit Joke";
+}
+
+<div class="container">
+    <h1>Edit Joke</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Joke.Id" />
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Joke.Setup" class="control-label"></label>
+                    <textarea asp-for="Joke.Setup" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Joke.Setup" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Joke.Punchline" class="control-label"></label>
+                    <textarea asp-for="Joke.Punchline" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Joke.Punchline" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Joke.Category" class="control-label"></label>
+                    <input asp-for="Joke.Category" class="form-control" />
+                    <span asp-validation-for="Joke.Category" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

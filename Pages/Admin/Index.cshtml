@@ -1,0 +1,86 @@
+@page
+@model MyAspNetApp.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Admin Dashboard</h1>
+        <a asp-page="/Jokes/Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add New Joke
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="searchString" class="form-control" placeholder="Search jokes..." value="@Model.SearchString">
+                </div>
+                <div class="col-md-3">
+                    <select name="category" class="form-select">
+                        <option value="">All Categories</option>
+                        <option value="Songs" selected="@(Model.Category == "Songs")">Songs</option>
+                        <option value="General" selected="@(Model.Category == "General")">General</option>
+                        <option value="Puns" selected="@(Model.Category == "Puns")">Puns</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title mb-4">All Jokes</h2>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Setup</th>
+                            <th>Punchline</th>
+                            <th>Category</th>
+                            <th>Created By</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Jokes.Any())
+                        {
+                            @foreach (var joke in Model.Jokes)
+                            {
+                                <tr>
+                                    <td>@joke.Setup</td>
+                                    <td>@joke.Punchline</td>
+                                    <td>@(joke.Category ?? "General")</td>
+                                    <td>@joke.CreatedByUserId</td>
+                                    <td>@joke.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a asp-page="/Jokes/Edit" asp-route-id="@joke.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a asp-page="/Jokes/Delete" asp-route-id="@joke.Id" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center">No jokes found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 

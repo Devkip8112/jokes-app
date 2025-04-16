@@ -1,0 +1,38 @@
+@page
+@model MyAspNetApp.Pages.Jokes.DeleteModel
+@{
+    ViewData["Title"] = "Delete Joke";
+}
+
+<div class="container">
+    <h1>Delete Joke</h1>
+
+    <div class="alert alert-danger">
+        <h3>Are you sure you want to delete this joke?</h3>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Joke.Setup</h5>
+            <p class="card-text">@Model.Joke.Punchline</p>
+            @if (!string.IsNullOrEmpty(Model.Joke.Category))
+            {
+                <span class="badge bg-secondary">@Model.Joke.Category</span>
+            }
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">By @Model.Joke.CreatedBy?.FirstName @Model.Joke.CreatedBy?.LastName</small>
+                <small class="text-muted">@Model.Joke.CreatedAt.ToString("MMM dd, yyyy")</small>
+            </div>
+        </div>
+    </div>
+
+    <form method="post">
+        <input type="hidden" asp-for="Joke.Id" />
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+        <a asp-page="./Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </form>
+</div> 

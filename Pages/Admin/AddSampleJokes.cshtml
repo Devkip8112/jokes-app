@@ -1,0 +1,57 @@
+@page
+@model MyAspNetApp.Pages.Admin.AddSampleJokesModel
+@{
+    ViewData["Title"] = "Add Sample Jokes";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">Add Sample Jokes</h1>
+            <p class="lead">Add predefined jokes to the system</p>
+        </div>
+    </div>
+
+    @if (Model.StatusMessage != null)
+    {
+        <div class="alert @(Model.IsError ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+            @Model.StatusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label">Select Sample Jokes</label>
+                    <select class="form-select" asp-for="SelectedJokes" multiple>
+                        @foreach (var joke in Model.SampleJokes)
+                        {
+                            <option value="@joke.Id">@joke.Setup - @joke.Category</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Select User</label>
+                    <select class="form-select" asp-for="SelectedUserId" asp-items="Model.Users"></select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Make Private</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="MakePrivate" />
+                        <label class="form-check-label" asp-for="MakePrivate">
+                            Make selected jokes private
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add Selected Jokes
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

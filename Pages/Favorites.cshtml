@@ -1,0 +1,59 @@
+@page
+@model MyAspNetApp.Pages.FavoritesModel
+@{
+    ViewData["Title"] = "My Favorite Jokes";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">My Favorite Jokes</h1>
+
+    @if (!Model.FavoriteJokes.Any())
+    {
+        <div class="alert alert-info">
+            You haven't added any jokes to your favorites yet. Start adding some from the <a asp-page="/Index" class="alert-link">home page</a>!
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var favorite in Model.FavoriteJokes)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@favorite.Joke.Setup</h5>
+                            <p class="card-text">@favorite.Joke.Punchline</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">@favorite.Joke.Category</span>
+                                <button class="btn btn-outline-danger btn-sm favorite-btn" data-joke-id="@favorite.JokeId">
+                                    <i class="bi bi-heart-fill"></i> Remove from Favorites
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.favorite-btn').click(function() {
+                var jokeId = $(this).data('joke-id');
+                var button = $(this);
+                
+                $.post('/Favorites?handler=ToggleFavorite', { jokeId: jokeId })
+                    .done(function(response) {
+                        if (response.success) {
+                            button.closest('.col-md-6').fadeOut();
+                        }
+                    })
+                    .fail(function() {
+                        alert('Failed to update favorite status. Please try again.');
+                    });
+            });
+        });
+    </script>
+} 

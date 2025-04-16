@@ -1,0 +1,144 @@
+@page
+@model MyAspNetApp.Pages.DashboardModel
+@{
+    ViewData["Title"] = "My Dashboard";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">My Dashboard</h1>
+            <p class="lead">Manage your jokes and view your statistics</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Jokes</h5>
+                    <p class="display-4">@Model.TotalJokes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Favorite Jokes</h5>
+                    <p class="display-4">@Model.FavoriteJokesCount</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Categories Used</h5>
+                    <p class="display-4">@Model.CategoriesCount</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">My Jokes</h5>
+                    <a asp-page="/Jokes/Create" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle"></i> New Joke
+                    </a>
+                </div>
+                <div class="card-body">
+                    @if (!Model.UserJokes.Any())
+                    {
+                        <div class="alert alert-info">
+                            You haven't shared any jokes yet. Click the "New Joke" button to get started!
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Setup</th>
+                                        <th>Category</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var joke in Model.UserJokes)
+                                    {
+                                        <tr>
+                                            <td>@joke.Setup</td>
+                                            <td><span class="badge bg-primary">@joke.Category</span></td>
+                                            <td>@joke.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a asp-page="/Jokes/Edit" asp-route-id="@joke.Id" class="btn btn-outline-primary">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <a asp-page="/Jokes/Delete" asp-route-id="@joke.Id" class="btn btn-outline-danger">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Category Distribution</h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var category in Model.CategoryDistribution)
+                    {
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>@category.Key</span>
+                                <span>@category.Value jokes</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: @(category.Value * 100 / Math.Max(1, Model.TotalJokes))%">
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        @foreach (var activity in Model.RecentActivity)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">@activity.Description</h6>
+                                    <small class="text-muted">@activity.Time.ToString("MMM dd")</small>
+                                </div>
+                                <p class="mb-1">@activity.Details</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
